@@ -8,10 +8,11 @@ enum class ItemType {
 
 enum class ItemCategory(val displayName: String) {
     ELECTRONICS("Electronics"),
-    ID_CARDS("ID & Cards"),
-    BOOKS_NOTES("Books & Notes"),
-    KEYS("Keys"),
-    CLOTHING("Clothing & Accessories"),
+    BAGS("Bags"),
+    ACCESSORIES("Accessories"),
+    DOCUMENTS_ID("Documents / ID Cards"),
+    BOOKS_STATIONERY("Books / Stationery"),
+    CLOTHING("Clothing"),
     OTHER("Other")
 }
 
@@ -27,4 +28,3 @@ data class ItemModel(
     val isMyReport: Boolean = false,
     val isResolved: Boolean = false
 ) : Serializable
-

@@ -17,7 +17,7 @@ object SampleData {
             id = "2",
             title = "Blue Hydro Flask 32oz",
             type = ItemType.FOUND,
-            category = ItemCategory.OTHER,
+            category = ItemCategory.ACCESSORIES,
             location = "Campus Recreation Gym Locker Room",
             date = "Nov 3, 2026",
             description = "Blue insulated water bottle found by locker 42. Features a campus engineering sticker. Handed over to the gym reception desk.",
@@ -28,7 +28,7 @@ object SampleData {
             id = "3",
             title = "Student ID Card - Sarah Connor",
             type = ItemType.LOST,
-            category = ItemCategory.ID_CARDS,
+            category = ItemCategory.DOCUMENTS_ID,
             location = "Main Dining Hall / Cafeteria",
             date = "Nov 1, 2026",
             description = "Lost official university student ID card during lunch rush near checkout register 2. Needed urgently for dorm access.",
@@ -39,7 +39,7 @@ object SampleData {
             id = "4",
             title = "Set of 3 Keys with Red Carabiner",
             type = ItemType.FOUND,
-            category = ItemCategory.KEYS,
+            category = ItemCategory.ACCESSORIES,
             location = "Science Quad Bench near Fountain",
             date = "Nov 3, 2026",
             description = "Dorm key, bike lock key, and a silver padlock key attached to a red aluminium carabiner clip.",
@@ -61,7 +61,7 @@ object SampleData {
             id = "6",
             title = "Calculus: Early Transcendentals 9th Ed.",
             type = ItemType.FOUND,
-            category = ItemCategory.BOOKS_NOTES,
+            category = ItemCategory.BOOKS_STATIONERY,
             location = "Math Building Rm 104",
             date = "Nov 2, 2026",
             description = "Hardcover textbook left on the lecture podium after the 10:00 AM session. First name 'David' handwritten on inner cover.",
@@ -78,4 +78,3 @@ object SampleData {
         items.add(0, item)
     }
 }
-

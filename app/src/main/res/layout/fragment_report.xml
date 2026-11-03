@@ -2,9 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/reportScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:paddingBottom="32dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -73,12 +76,12 @@
             android:layout_marginTop="16dp"
             android:hint="@string/label_category">
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/actvCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:text="Electronics" />
+                app:simpleItems="@array/categories_array" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Item Title -->
@@ -89,13 +92,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:hint="@string/label_title"
-            app:helperText="Be specific about brand, model, color">
+            app:helperText="Be specific about brand, model, color"
+            app:placeholderText="@string/hint_title">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_title"
                 android:inputType="textCapSentences"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -108,13 +111,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:hint="@string/label_location"
+            app:placeholderText="@string/hint_location"
             app:startIconDrawable="@drawable/ic_location">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_location"
                 android:inputType="textCapWords"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -127,13 +130,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:hint="@string/label_date"
+            app:placeholderText="@string/hint_date"
             app:startIconDrawable="@drawable/ic_calendar">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_date"
                 android:inputType="text"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -145,16 +148,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:hint="@string/label_description">
+            android:hint="@string/label_description"
+            app:placeholderText="@string/hint_description">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="top"
-                android:hint="@string/hint_description"
+                android:gravity="top|start"
                 android:inputType="textMultiLine"
-                android:lines="3" />
+                android:lines="3"
+                android:minLines="3" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Contact Information -->
@@ -165,13 +169,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:hint="@string/label_contact"
+            app:placeholderText="@string/hint_contact"
             app:startIconDrawable="@drawable/ic_email">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etContact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_contact"
                 android:inputType="textEmailAddress|textPersonName"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -244,7 +248,7 @@
             android:layout_width="match_parent"
             android:layout_height="54dp"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="16dp"
             android:backgroundTint="@color/campus_primary"
             android:text="@string/btn_submit_report"
             android:textAllCaps="false"
@@ -254,4 +258,3 @@
 
     </LinearLayout>
 </ScrollView>
-

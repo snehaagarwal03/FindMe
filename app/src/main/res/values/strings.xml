@@ -21,13 +21,24 @@
     <string name="label_location">Location</string>
     <string name="hint_location">e.g., Library 2nd Floor Study Desk</string>
     <string name="label_date">Date Lost / Found</string>
-    <string name="hint_date">e.g., Nov 3, 2026</string>
+    <string name="hint_date">e.g., Nov 4, 2026</string>
     <string name="label_description">Description</string>
     <string name="hint_description">Provide distinguishing details, color, brand, serial marks…</string>
     <string name="label_contact">Contact Information</string>
     <string name="hint_contact">e.g., student.id@campus.edu or 555-0199</string>
     <string name="btn_add_photo">Select Photo</string>
     <string name="btn_submit_report">Submit Report</string>
+
+    <!-- Categories -->
+    <string-array name="categories_array">
+        <item>Electronics</item>
+        <item>Bags</item>
+        <item>Accessories</item>
+        <item>Documents / ID Cards</item>
+        <item>Books / Stationery</item>
+        <item>Clothing</item>
+        <item>Other</item>
+    </string-array>
 
     <!-- Details -->
     <string name="title_item_detail">Item Details</string>

@@ -32,7 +32,6 @@ class ReportFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Register Android Photo Picker contract
         pickMediaLauncher = registerForActivityResult(
             ActivityResultContracts.PickVisualMedia()
         ) { uri: Uri? ->
@@ -64,9 +63,9 @@ class ReportFragment : Fragment() {
     }
 
     private fun setupCategoryDropdown() {
-        val categories = ItemCategory.values().map { it.displayName }
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, categories)
-        binding.actvCategory.setAdapter(adapter)
+        val categories = resources.getStringArray(R.array.categories_array)
+        binding.actvCategory.setSimpleItems(categories)
+        binding.actvCategory.setText(ItemCategory.ELECTRONICS.displayName, false)
     }
 
     private fun setupDefaultDate() {
@@ -154,7 +153,6 @@ class ReportFragment : Fragment() {
 
         Toast.makeText(requireContext(), "Report submitted successfully!", Toast.LENGTH_LONG).show()
 
-        // Clear form
         resetForm()
     }
 
@@ -168,6 +166,10 @@ class ReportFragment : Fragment() {
         binding.layoutPhotoPlaceholder.visibility = View.VISIBLE
         selectedImageUri = null
         setupDefaultDate()
+        binding.actvCategory.setText(ItemCategory.ELECTRONICS.displayName, false)
+        binding.tilTitle.error = null
+        binding.tilLocation.error = null
+        binding.tilContact.error = null
     }
 
     override fun onDestroyView() {
@@ -179,4 +181,3 @@ class ReportFragment : Fragment() {
         fun newInstance() = ReportFragment()
     }
 }
-

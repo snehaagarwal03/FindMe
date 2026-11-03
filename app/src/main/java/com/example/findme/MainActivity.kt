@@ -1,6 +1,7 @@
 package com.example.findme
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -25,16 +26,31 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.mainCoordinator) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
-            insets
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainRoot) { _, windowInsets ->
+            val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+            val isImeVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime())
+
+            // Apply status bar top padding to AppBarLayout
+            binding.appBarLayout.setPadding(0, systemBars.top, 0, 0)
+
+            // When keyboard is visible, hide bottom navigation so it doesn't float above keyboard.
+            // When keyboard is hidden, restore bottom navigation with navigation bar padding.
+            if (isImeVisible) {
+                binding.bottomNavigation.visibility = View.GONE
+                binding.mainRoot.setPadding(systemBars.left, 0, systemBars.right, ime.bottom)
+            } else {
+                binding.bottomNavigation.visibility = View.VISIBLE
+                binding.bottomNavigation.setPadding(0, 0, 0, systemBars.bottom)
+                binding.mainRoot.setPadding(systemBars.left, 0, systemBars.right, 0)
+            }
+
+            windowInsets
         }
 
         setupNavigation()
 
         if (savedInstanceState == null) {
-            // Start with Home destination
             switchFragment(homeFragment, getString(R.string.title_home))
         }
     }
