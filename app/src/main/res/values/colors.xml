@@ -2,4 +2,23 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Campus Lost and Found theme palette -->
+    <color name="campus_primary">#1E3A8A</color>
+    <color name="campus_primary_dark">#172554</color>
+    <color name="campus_primary_light">#DBEAFE</color>
+    <color name="campus_accent">#2563EB</color>
+
+    <!-- Status Badges -->
+    <color name="lost_badge_text">#B91C1C</color>
+    <color name="lost_badge_bg">#FEE2E2</color>
+    <color name="found_badge_text">#15803D</color>
+    <color name="found_badge_bg">#DCFCE7</color>
+
+    <!-- UI Backgrounds and Text -->
+    <color name="campus_bg">#F8FAFC</color>
+    <color name="campus_surface">#FFFFFF</color>
+    <color name="text_primary">#0F172A</color>
+    <color name="text_secondary">#64748B</color>
+    <color name="border_color">#E2E8F0</color>
 </resources>
