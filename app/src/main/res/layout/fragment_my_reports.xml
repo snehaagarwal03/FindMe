@@ -6,53 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Header Description Card -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="@color/campus_primary_light"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="14dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Locally Stored Reports"
-                android:textColor="@color/campus_primary_dark"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="These are lost and found listings reported on this device."
-                android:textColor="@color/campus_primary"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/tvMyReportsCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/text_secondary"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        tools:text="2 local submissions" />
-
     <!-- RecyclerView for my reports -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMyReports"
@@ -60,6 +13,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:clipToPadding="false"
+        android:paddingTop="8dp"
         android:paddingBottom="24dp"
         android:scrollbars="vertical"
         tools:listitem="@layout/item_card_post" />
@@ -102,4 +56,3 @@
     </LinearLayout>
 
 </LinearLayout>
-

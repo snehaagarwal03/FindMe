@@ -58,8 +58,6 @@ class MyReportsFragment : Fragment() {
         val myReports = SampleData.getMyReports()
         itemAdapter.submitList(myReports)
 
-        binding.tvMyReportsCount.text = "${myReports.size} local submission${if (myReports.size == 1) "" else "s"}"
-
         if (myReports.isEmpty()) {
             binding.rvMyReports.visibility = View.GONE
             binding.layoutEmptyState.visibility = View.VISIBLE
@@ -78,4 +76,3 @@ class MyReportsFragment : Fragment() {
         fun newInstance() = MyReportsFragment()
     }
 }
-
