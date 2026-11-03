@@ -64,7 +64,7 @@ class ItemDetailActivity : AppCompatActivity() {
         }
 
         binding.tvDetailTitle.text = currentItem.title
-        binding.tvDetailCategory.text = currentItem.category.displayName
+        binding.tvDetailCategory.text = currentItem.displayCategory
         binding.tvDetailLocation.text = currentItem.location
         binding.tvDetailDate.text = currentItem.date
         binding.tvDetailDescription.text = currentItem.description
@@ -116,7 +116,7 @@ class ItemDetailActivity : AppCompatActivity() {
         val shareText = """
             [FindMe - Campus Lost & Found]
             Item: ${currentItem.title} ($typeLabel)
-            Category: ${currentItem.category.displayName}
+            Category: ${currentItem.displayCategory}
             Location: ${currentItem.location}
             Date: ${currentItem.date}
             Description: ${currentItem.description}

@@ -37,7 +37,7 @@ class ItemAdapter(
             val context = binding.root.context
 
             binding.tvTitle.text = item.title
-            binding.tvCategory.text = item.category.displayName
+            binding.tvCategory.text = item.displayCategory
             binding.tvLocation.text = item.location
             binding.tvDate.text = item.date
             binding.tvDescription.text = item.description
@@ -51,8 +51,6 @@ class ItemAdapter(
                 binding.tvTypeBadge.setBackgroundResource(R.drawable.bg_badge_found)
                 binding.tvTypeBadge.setTextColor(ContextCompat.getColor(context, R.color.found_badge_text))
             }
-
-            binding.tvMyReportTag.visibility = if (item.isMyReport) View.VISIBLE else View.GONE
 
             binding.root.setOnClickListener {
                 onItemClick(item)

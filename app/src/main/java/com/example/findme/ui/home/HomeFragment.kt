@@ -98,7 +98,7 @@ class HomeFragment : Fragment() {
                     item.title.contains(currentSearchQuery, ignoreCase = true) ||
                     item.description.contains(currentSearchQuery, ignoreCase = true) ||
                     item.location.contains(currentSearchQuery, ignoreCase = true) ||
-                    item.category.displayName.contains(currentSearchQuery, ignoreCase = true)
+                    item.displayCategory.contains(currentSearchQuery, ignoreCase = true)
 
             matchesType && matchesQuery
         }

@@ -21,10 +21,18 @@ data class ItemModel(
     val title: String,
     val type: ItemType,
     val category: ItemCategory,
+    val customCategory: String? = null,
     val location: String,
     val date: String,
     val description: String,
     val contactInfo: String,
     val isMyReport: Boolean = false,
     val isResolved: Boolean = false
-) : Serializable
+) : Serializable {
+    val displayCategory: String
+        get() = if (category == ItemCategory.OTHER && !customCategory.isNullOrBlank()) {
+            customCategory
+        } else {
+            category.displayName
+        }
+}

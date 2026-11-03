@@ -50,25 +50,6 @@
                 android:textSize="11sp"
                 android:textStyle="bold"
                 tools:text="Electronics" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/tvMyReportTag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/campus_primary_light"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="3dp"
-                android:text="My Report"
-                android:textColor="@color/campus_primary"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:visibility="visible" />
         </LinearLayout>
 
         <!-- Title -->

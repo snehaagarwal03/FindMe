@@ -18,6 +18,8 @@
     <string name="label_title">Item Name / Title</string>
     <string name="hint_title">e.g., Space Gray MacBook Pro M2</string>
     <string name="label_category">Category</string>
+    <string name="label_custom_category">Specify Category</string>
+    <string name="hint_custom_category">Enter the item category</string>
     <string name="label_location">Location</string>
     <string name="hint_location">e.g., Library 2nd Floor Study Desk</string>
     <string name="label_date">Date Lost / Found</string>

@@ -26,6 +26,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Ensure title remains strictly "FindMe" across all screens
+        binding.topToolbar.title = getString(R.string.app_name)
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.mainRoot) { _, windowInsets ->
             val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
@@ -51,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         setupNavigation()
 
         if (savedInstanceState == null) {
-            switchFragment(homeFragment, getString(R.string.title_home))
+            switchFragment(homeFragment)
         }
     }
 
@@ -59,15 +62,15 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    switchFragment(homeFragment, getString(R.string.title_home))
+                    switchFragment(homeFragment)
                     true
                 }
                 R.id.navigation_report -> {
-                    switchFragment(reportFragment, getString(R.string.title_report))
+                    switchFragment(reportFragment)
                     true
                 }
                 R.id.navigation_my_reports -> {
-                    switchFragment(myReportsFragment, getString(R.string.title_my_reports))
+                    switchFragment(myReportsFragment)
                     true
                 }
                 else -> false
@@ -75,8 +78,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun switchFragment(fragment: Fragment, title: String) {
-        binding.topToolbar.title = "FindMe • $title"
+    private fun switchFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.nav_host_container, fragment)
             .commit()

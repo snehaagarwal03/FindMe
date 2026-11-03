@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
@@ -66,6 +65,21 @@ class ReportFragment : Fragment() {
         val categories = resources.getStringArray(R.array.categories_array)
         binding.actvCategory.setSimpleItems(categories)
         binding.actvCategory.setText(ItemCategory.ELECTRONICS.displayName, false)
+
+        binding.actvCategory.setOnItemClickListener { parent, _, position, _ ->
+            val selected = parent.getItemAtPosition(position).toString()
+            handleCategorySelection(selected)
+        }
+    }
+
+    private fun handleCategorySelection(categoryName: String) {
+        if (categoryName.equals(ItemCategory.OTHER.displayName, ignoreCase = true)) {
+            binding.tilCustomCategory.visibility = View.VISIBLE
+        } else {
+            binding.tilCustomCategory.visibility = View.GONE
+            binding.etCustomCategory.text?.clear()
+            binding.tilCustomCategory.error = null
+        }
     }
 
     private fun setupDefaultDate() {
@@ -95,6 +109,7 @@ class ReportFragment : Fragment() {
         val title = binding.etTitle.text?.toString()?.trim().orEmpty()
         val location = binding.etLocation.text?.toString()?.trim().orEmpty()
         val contact = binding.etContact.text?.toString()?.trim().orEmpty()
+        val categoryName = binding.actvCategory.text.toString()
 
         if (title.isEmpty()) {
             binding.tilTitle.error = "Please enter an item name"
@@ -117,6 +132,19 @@ class ReportFragment : Fragment() {
             binding.tilContact.error = null
         }
 
+        // Validate custom category if 'Other' is selected
+        if (categoryName.equals(ItemCategory.OTHER.displayName, ignoreCase = true)) {
+            val customCat = binding.etCustomCategory.text?.toString()?.trim().orEmpty()
+            if (customCat.isEmpty()) {
+                binding.tilCustomCategory.error = "Please specify the item category"
+                isValid = false
+            } else {
+                binding.tilCustomCategory.error = null
+            }
+        } else {
+            binding.tilCustomCategory.error = null
+        }
+
         return isValid
     }
 
@@ -128,8 +156,14 @@ class ReportFragment : Fragment() {
         }
 
         val categoryName = binding.actvCategory.text.toString()
-        val category = ItemCategory.values().firstOrNull { it.displayName == categoryName }
+        val category = ItemCategory.values().firstOrNull { it.displayName.equals(categoryName, ignoreCase = true) }
             ?: ItemCategory.OTHER
+
+        val customCategory = if (category == ItemCategory.OTHER) {
+            binding.etCustomCategory.text?.toString()?.trim()
+        } else {
+            null
+        }
 
         val title = binding.etTitle.text?.toString()?.trim().orEmpty()
         val location = binding.etLocation.text?.toString()?.trim().orEmpty()
@@ -142,6 +176,7 @@ class ReportFragment : Fragment() {
             title = title,
             type = itemType,
             category = category,
+            customCategory = customCategory,
             location = location,
             date = date,
             description = description.ifEmpty { "No additional details provided." },
@@ -161,6 +196,9 @@ class ReportFragment : Fragment() {
         binding.etLocation.text?.clear()
         binding.etDescription.text?.clear()
         binding.etContact.text?.clear()
+        binding.etCustomCategory.text?.clear()
+        binding.tilCustomCategory.visibility = View.GONE
+        binding.tilCustomCategory.error = null
         binding.ivSelectedPhoto.setImageURI(null)
         binding.ivSelectedPhoto.visibility = View.GONE
         binding.layoutPhotoPlaceholder.visibility = View.VISIBLE
