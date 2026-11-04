@@ -243,22 +243,116 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Share Action Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnShareBottom"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+            <!-- Report Completion Section (Owner Active Checkbox or Completed Status) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCompletionSection"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="24dp"
-                android:text="@string/share_item"
-                android:textAllCaps="false"
-                android:textColor="@color/campus_primary"
-                app:cornerRadius="10dp"
-                app:icon="@drawable/ic_share"
-                app:iconGravity="textStart"
-                app:iconTint="@color/campus_primary"
-                app:strokeColor="@color/campus_primary" />
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/campus_surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/border_color"
+                app:strokeWidth="1dp"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Active Owner State: Completion Checkbox -->
+                    <LinearLayout
+                        android:id="@+id/layoutCompletionCheckbox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Report Status"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Mark this report completed once the item is recovered or handed over."
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            android:id="@+id/cbMarkCompleted"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="I have found this item now." />
+                    </LinearLayout>
+
+                    <!-- Completed State: Status Banner & Description -->
+                    <LinearLayout
+                        android:id="@+id/layoutCompletionStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        tools:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_check_circle"
+                                app:tint="@color/found_badge_text" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:background="@drawable/bg_badge_found"
+                                android:fontFamily="sans-serif-black"
+                                android:letterSpacing="0.08"
+                                android:text="@string/status_completed_badge"
+                                android:textColor="@color/found_badge_text"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvCompletionMessage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="This lost item has been recovered." />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="This report has been resolved and moved to Past reports."
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

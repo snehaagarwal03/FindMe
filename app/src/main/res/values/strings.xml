@@ -50,16 +50,34 @@
         <item>Other</item>
     </string-array>
 
-    <!-- Details -->
+    <!-- Details & Completion -->
     <string name="title_item_detail">Item Details</string>
     <string name="share_item">Share Item</string>
     <string name="btn_contact">Contact Finder / Owner</string>
     <string name="section_details">Details</string>
     <string name="section_contact">Contact &amp; Claim</string>
+    <string name="checkbox_lost_completed">I have found this item now.</string>
+    <string name="checkbox_found_completed">This item has been handed over to the owner.</string>
+    <string name="status_completed_badge">COMPLETED</string>
+    <string name="status_lost_completed_desc">This lost item has been recovered.</string>
+    <string name="status_found_completed_desc">This item has been handed over to the owner.</string>
+    <string name="dialog_title_lost_completed">Mark as Recovered?</string>
+    <string name="dialog_msg_lost_completed">Are you sure you want to mark this item as recovered? This will mark the report as completed and move it to your Past reports.</string>
+    <string name="dialog_title_found_completed">Mark as Handed Over?</string>
+    <string name="dialog_msg_found_completed">Are you sure you have handed over this item to the owner? This will mark the report as completed and move it to your Past reports.</string>
+    <string name="action_confirm">Confirm</string>
+
+    <!-- My Reports Tabs -->
+    <string name="tab_active">Active</string>
+    <string name="tab_past">Past</string>
 
     <!-- Empty States -->
     <string name="empty_home_title">No items found</string>
     <string name="empty_home_subtitle">Try searching with different keywords or changing your filter.</string>
     <string name="empty_my_reports_title">No reports submitted yet</string>
     <string name="empty_my_reports_subtitle">Items you report from this device will be listed here.</string>
+    <string name="empty_my_reports_active_title">No active reports</string>
+    <string name="empty_my_reports_active_subtitle">Items you report that are currently lost or found will appear here.</string>
+    <string name="empty_my_reports_past_title">No past reports</string>
+    <string name="empty_my_reports_past_subtitle">Reports you mark as completed will appear here in your history.</string>
 </resources>

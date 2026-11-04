@@ -6,6 +6,33 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- Active vs Past Tabs -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutReports"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
+        android:background="@android:color/transparent"
+        app:tabIndicatorColor="@color/campus_primary"
+        app:tabIndicatorHeight="3dp"
+        app:tabSelectedTextColor="@color/campus_primary"
+        app:tabTextColor="@color/text_secondary"
+        app:tabMode="fixed"
+        app:tabGravity="fill">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_active" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_past" />
+    </com.google.android.material.tabs.TabLayout>
+
     <!-- RecyclerView for my reports -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMyReports"
@@ -37,20 +64,22 @@
             app:tint="@color/text_secondary" />
 
         <TextView
+            android:id="@+id/tvEmptyReportsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/empty_my_reports_title"
+            android:text="@string/empty_my_reports_active_title"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tvEmptyReportsSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:gravity="center"
-            android:text="@string/empty_my_reports_subtitle"
+            android:text="@string/empty_my_reports_active_subtitle"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
     </LinearLayout>

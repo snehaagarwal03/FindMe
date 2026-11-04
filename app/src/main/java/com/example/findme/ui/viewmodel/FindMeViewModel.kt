@@ -26,7 +26,7 @@ class FindMeViewModel(application: Application) : AndroidViewModel(application) 
     private val repository = app.repository
     private val preferences = app.preferences
 
-    // --- Home Screen State ---
+    // --- Home Screen State (Active Reports Only) ---
 
     /** Current search query text */
     val searchQuery = MutableStateFlow("")
@@ -34,7 +34,7 @@ class FindMeViewModel(application: Application) : AndroidViewModel(application) 
     /** Current filter: ALL, LOST, or FOUND */
     val currentFilter = MutableStateFlow(FindMePreferences.FILTER_ALL)
 
-    /** Observable list of items for Home, filtered by type and search query */
+    /** Observable list of ACTIVE items for Home, filtered by type and search query */
     val homeItems: Flow<List<ItemEntity>> = combine(
         searchQuery, currentFilter
     ) { query, filter ->
@@ -42,18 +42,43 @@ class FindMeViewModel(application: Application) : AndroidViewModel(application) 
     }.flatMapLatest { (query, filter) ->
         if (query.isBlank()) {
             when (filter) {
-                FindMePreferences.FILTER_LOST -> repository.getItemsByType(ItemType.LOST)
-                FindMePreferences.FILTER_FOUND -> repository.getItemsByType(ItemType.FOUND)
-                else -> repository.getAllItems()
+                FindMePreferences.FILTER_LOST -> repository.getActiveItemsByType(ItemType.LOST)
+                FindMePreferences.FILTER_FOUND -> repository.getActiveItemsByType(ItemType.FOUND)
+                else -> repository.getActiveItems()
             }
         } else {
-            // When searching, we apply the type filter in-memory for simplicity
-            repository.searchItems(query)
+            // When searching, search active items
+            repository.searchActiveItems(query)
         }
     }
 
-    /** Observable list of locally submitted reports */
-    val myReports: Flow<List<ItemEntity>> = repository.getMyReports()
+    // --- My Reports State (Active vs Past Tabs) ---
+
+    enum class MyReportsTab {
+        ACTIVE, PAST
+    }
+
+    val myReportsTab = MutableStateFlow(MyReportsTab.ACTIVE)
+
+    /** Observable list of locally submitted reports (Active or Past based on selected tab) */
+    val myReports: Flow<List<ItemEntity>> = myReportsTab.flatMapLatest { tab ->
+        when (tab) {
+            MyReportsTab.ACTIVE -> repository.getMyActiveReports()
+            MyReportsTab.PAST -> repository.getMyPastReports()
+        }
+    }
+
+    fun setMyReportsTab(tab: MyReportsTab) {
+        myReportsTab.value = tab
+    }
+
+    // --- Completion Workflow ---
+
+    fun markReportCompleted(itemId: String) {
+        viewModelScope.launch {
+            repository.updateCompletionStatus(itemId, true)
+        }
+    }
 
     // --- Report Submission ---
 
@@ -114,4 +139,3 @@ class FindMeViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 }
-

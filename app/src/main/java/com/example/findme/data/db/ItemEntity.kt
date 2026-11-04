@@ -21,6 +21,6 @@ data class ItemEntity(
     val contactInfo: String? = null,
     val isMyReport: Boolean = false,
     val isResolved: Boolean = false,
+    val isCompleted: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 )
-

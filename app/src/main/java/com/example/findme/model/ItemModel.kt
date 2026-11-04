@@ -29,6 +29,7 @@ data class ItemModel(
     val contactInfo: String? = null,
     val isMyReport: Boolean = false,
     val isResolved: Boolean = false,
+    val isCompleted: Boolean = false,
     val imageUri: String? = null,
     val imageResId: Int? = null
 ) : Serializable {
@@ -53,6 +54,7 @@ fun ItemEntity.toItemModel(): ItemModel = ItemModel(
     contactInfo = contactInfo,
     isMyReport = isMyReport,
     isResolved = isResolved,
+    isCompleted = isCompleted,
     imageUri = imagePath,
     imageResId = imageResId
 )

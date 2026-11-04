@@ -2,7 +2,6 @@ package com.example.findme.ui.detail
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -16,11 +15,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.findme.FindMeApplication
 import com.example.findme.R
-import com.example.findme.databinding.ActivityItemDetailBinding
 import com.example.findme.data.db.ItemEntity
+import com.example.findme.databinding.ActivityItemDetailBinding
 import com.example.findme.model.ItemCategory
 import com.example.findme.model.ItemType
 import com.example.findme.utils.ImageUtils
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
 class ItemDetailActivity : AppCompatActivity() {
@@ -65,15 +65,19 @@ class ItemDetailActivity : AppCompatActivity() {
 
         val app = application as FindMeApplication
         lifecycleScope.launch {
-            val entity = app.repository.getItemById(itemId)
-            if (entity == null) {
-                Toast.makeText(this@ItemDetailActivity, "Item no longer exists", Toast.LENGTH_SHORT).show()
-                finish()
-                return@launch
+            app.repository.getItemByIdFlow(itemId).collect { entity ->
+                if (entity == null) {
+                    if (item == null) {
+                        Toast.makeText(this@ItemDetailActivity, "Item no longer exists", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                    return@collect
+                }
+                item = entity
+                populateDetails(entity)
+                setupActions(entity)
+                setupCompletionSection(entity)
             }
-            item = entity
-            populateDetails(entity)
-            setupActions(entity)
         }
     }
 
@@ -141,9 +145,79 @@ class ItemDetailActivity : AppCompatActivity() {
                 Toast.makeText(this, "Contact info: $contact", Toast.LENGTH_LONG).show()
             }
         }
+    }
 
-        binding.btnShareBottom.setOnClickListener {
-            shareItem()
+    private fun setupCompletionSection(currentItem: ItemEntity) {
+        if (currentItem.isCompleted) {
+            // Already completed — show non-editable completion status card
+            binding.cardCompletionSection.visibility = View.VISIBLE
+            binding.layoutCompletionCheckbox.visibility = View.GONE
+            binding.layoutCompletionStatus.visibility = View.VISIBLE
+
+            if (currentItem.type == ItemType.LOST) {
+                binding.tvCompletionMessage.text = getString(R.string.status_lost_completed_desc)
+            } else {
+                binding.tvCompletionMessage.text = getString(R.string.status_found_completed_desc)
+            }
+        } else if (currentItem.isMyReport) {
+            // Active report belonging to current user — show completion checkbox
+            binding.cardCompletionSection.visibility = View.VISIBLE
+            binding.layoutCompletionCheckbox.visibility = View.VISIBLE
+            binding.layoutCompletionStatus.visibility = View.GONE
+
+            if (currentItem.type == ItemType.LOST) {
+                binding.cbMarkCompleted.text = getString(R.string.checkbox_lost_completed)
+            } else {
+                binding.cbMarkCompleted.text = getString(R.string.checkbox_found_completed)
+            }
+
+            binding.cbMarkCompleted.setOnCheckedChangeListener(null)
+            binding.cbMarkCompleted.isChecked = false
+            binding.cbMarkCompleted.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    showCompletionConfirmationDialog(currentItem)
+                }
+            }
+        } else {
+            // Not reported by current user and not completed — hide completion section
+            binding.cardCompletionSection.visibility = View.GONE
+        }
+    }
+
+    private fun showCompletionConfirmationDialog(currentItem: ItemEntity) {
+        val isLost = currentItem.type == ItemType.LOST
+        val title = if (isLost) {
+            getString(R.string.dialog_title_lost_completed)
+        } else {
+            getString(R.string.dialog_title_found_completed)
+        }
+        val message = if (isLost) {
+            getString(R.string.dialog_msg_lost_completed)
+        } else {
+            getString(R.string.dialog_msg_found_completed)
+        }
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(R.string.action_confirm) { _, _ ->
+                markAsCompleted(currentItem.id)
+            }
+            .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                binding.cbMarkCompleted.isChecked = false
+                dialog.dismiss()
+            }
+            .setOnCancelListener {
+                binding.cbMarkCompleted.isChecked = false
+            }
+            .show()
+    }
+
+    private fun markAsCompleted(itemId: String) {
+        val app = application as FindMeApplication
+        lifecycleScope.launch {
+            app.repository.updateCompletionStatus(itemId, true)
+            Toast.makeText(this@ItemDetailActivity, "Report marked as completed!", Toast.LENGTH_SHORT).show()
         }
     }
 
