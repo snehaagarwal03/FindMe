@@ -52,6 +52,25 @@
                 tools:text="Electronics" />
         </LinearLayout>
 
+        <!-- Item Photo Container -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardPhotoContainer"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/border_color"
+            app:strokeWidth="1dp">
+
+            <ImageView
+                android:id="@+id/ivItemPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                tools:srcCompat="@drawable/ic_sample_laptop" />
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Title -->
         <TextView
             android:id="@+id/tvTitle"

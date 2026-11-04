@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.findme.R
 import com.example.findme.databinding.FragmentReportBinding
@@ -16,6 +17,9 @@ import com.example.findme.model.ItemCategory
 import com.example.findme.model.ItemModel
 import com.example.findme.model.ItemType
 import com.example.findme.model.SampleData
+import com.example.findme.utils.FileUtils
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -27,18 +31,39 @@ class ReportFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var selectedImageUri: Uri? = null
+    private var tempCameraFile: File? = null
+    private var tempCameraUri: Uri? = null
+
     private lateinit var pickMediaLauncher: ActivityResultLauncher<PickVisualMediaRequest>
+    private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Native Photo Picker launcher (Gallery)
         pickMediaLauncher = registerForActivityResult(
             ActivityResultContracts.PickVisualMedia()
         ) { uri: Uri? ->
             if (uri != null) {
                 selectedImageUri = uri
-                binding.layoutPhotoPlaceholder.visibility = View.GONE
-                binding.ivSelectedPhoto.visibility = View.VISIBLE
-                binding.ivSelectedPhoto.setImageURI(uri)
+                displaySelectedPhoto(uri)
+            }
+            // If uri == null, user cancelled picker: preserve existing selection!
+        }
+
+        // Native Camera Capture launcher (TakePicture contract with FileProvider content URI)
+        takePictureLauncher = registerForActivityResult(
+            ActivityResultContracts.TakePicture()
+        ) { success: Boolean ->
+            if (success && tempCameraUri != null) {
+                selectedImageUri = tempCameraUri
+                displaySelectedPhoto(tempCameraUri!!)
+            } else {
+                // If cancelled or failed, cleanup the temporary file if it was not already selected
+                if (selectedImageUri != tempCameraUri) {
+                    tempCameraFile?.delete()
+                }
+                // Existing selectedImageUri is preserved!
             }
         }
     }
@@ -57,7 +82,7 @@ class ReportFragment : Fragment() {
 
         setupCategoryDropdown()
         setupDefaultDate()
-        setupPhotoPicker()
+        setupPhotoSelectionControls()
         setupSubmitButton()
     }
 
@@ -87,12 +112,82 @@ class ReportFragment : Fragment() {
         binding.etDate.setText(dateFormat.format(Date()))
     }
 
-    private fun setupPhotoPicker() {
+    private fun setupPhotoSelectionControls() {
+        // Tapping on the photo card triggers source selection dialog
         binding.cardSelectPhoto.setOnClickListener {
-            pickMediaLauncher.launch(
-                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-            )
+            showPhotoSourceDialog()
         }
+
+        // Direct Take Photo button
+        binding.btnCaptureCamera.setOnClickListener {
+            launchCamera()
+        }
+
+        // Direct Choose from Gallery button
+        binding.btnPickGallery.setOnClickListener {
+            launchGallery()
+        }
+    }
+
+    private fun showPhotoSourceDialog() {
+        val title = if (selectedImageUri == null) {
+            getString(R.string.photo_dialog_title)
+        } else {
+            getString(R.string.photo_dialog_change_title)
+        }
+
+        val options = arrayOf(
+            getString(R.string.option_camera),
+            getString(R.string.option_gallery)
+        )
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(title)
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> launchCamera()
+                    1 -> launchGallery()
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun launchCamera() {
+        try {
+            val (file, uri) = FileUtils.createCameraTempUri(requireContext())
+            tempCameraFile = file
+            tempCameraUri = uri
+            takePictureLauncher.launch(uri)
+        } catch (e: Exception) {
+            Toast.makeText(
+                requireContext(),
+                "Unable to open camera: ${e.message}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun launchGallery() {
+        pickMediaLauncher.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
+    }
+
+    private fun displaySelectedPhoto(uri: Uri) {
+        binding.layoutPhotoPlaceholder.visibility = View.GONE
+        binding.ivSelectedPhoto.visibility = View.VISIBLE
+        binding.layoutChangePhotoBadge.visibility = View.VISIBLE
+
+        binding.ivSelectedPhoto.setImageURI(null)
+        binding.ivSelectedPhoto.setImageURI(uri)
+
+        // Clear photo validation error if it was previously triggered
+        binding.tvPhotoError.visibility = View.GONE
+        binding.cardSelectPhoto.strokeColor = ContextCompat.getColor(
+            requireContext(),
+            R.color.border_color
+        )
     }
 
     private fun setupSubmitButton() {
@@ -145,10 +240,37 @@ class ReportFragment : Fragment() {
             binding.tilCustomCategory.error = null
         }
 
+        // Compulsory Photo validation
+        if (selectedImageUri == null) {
+            binding.tvPhotoError.text = getString(R.string.error_photo_required)
+            binding.tvPhotoError.visibility = View.VISIBLE
+            binding.cardSelectPhoto.strokeColor = ContextCompat.getColor(
+                requireContext(),
+                R.color.lost_badge_text
+            )
+            isValid = false
+        } else {
+            binding.tvPhotoError.visibility = View.GONE
+            binding.cardSelectPhoto.strokeColor = ContextCompat.getColor(
+                requireContext(),
+                R.color.border_color
+            )
+        }
+
+        if (!isValid) {
+            Toast.makeText(
+                requireContext(),
+                "Please fill in all required fields and add a photo",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
         return isValid
     }
 
     private fun submitReport() {
+        val photoUri = selectedImageUri ?: return
+
         val itemType = if (binding.toggleType.checkedButtonId == R.id.btnTypeFound) {
             ItemType.FOUND
         } else {
@@ -171,8 +293,24 @@ class ReportFragment : Fragment() {
         val description = binding.etDescription.text?.toString()?.trim().orEmpty()
         val contact = binding.etContact.text?.toString()?.trim().orEmpty()
 
+        val itemId = UUID.randomUUID().toString()
+
+        // Copy picked/captured image to FindMe's app-specific internal storage
+        val internalImagePath = FileUtils.saveImageToInternalStorage(
+            requireContext(),
+            photoUri,
+            itemId
+        )
+
+        // If the photo was a temporary camera capture, delete the temp file from cache
+        if (photoUri == tempCameraUri) {
+            tempCameraFile?.delete()
+            tempCameraFile = null
+            tempCameraUri = null
+        }
+
         val newItem = ItemModel(
-            id = UUID.randomUUID().toString(),
+            id = itemId,
             title = title,
             type = itemType,
             category = category,
@@ -181,7 +319,8 @@ class ReportFragment : Fragment() {
             date = date,
             description = description.ifEmpty { "No additional details provided." },
             contactInfo = contact,
-            isMyReport = true
+            isMyReport = true,
+            imageUri = internalImagePath
         )
 
         SampleData.addItem(newItem)
@@ -199,10 +338,23 @@ class ReportFragment : Fragment() {
         binding.etCustomCategory.text?.clear()
         binding.tilCustomCategory.visibility = View.GONE
         binding.tilCustomCategory.error = null
-        binding.ivSelectedPhoto.setImageURI(null)
-        binding.ivSelectedPhoto.visibility = View.GONE
-        binding.layoutPhotoPlaceholder.visibility = View.VISIBLE
+
+        // Reset photo selection state and views
         selectedImageUri = null
+        tempCameraFile?.delete()
+        tempCameraFile = null
+        tempCameraUri = null
+
+        binding.ivSelectedPhoto.setImageDrawable(null)
+        binding.ivSelectedPhoto.visibility = View.GONE
+        binding.layoutChangePhotoBadge.visibility = View.GONE
+        binding.layoutPhotoPlaceholder.visibility = View.VISIBLE
+        binding.tvPhotoError.visibility = View.GONE
+        binding.cardSelectPhoto.strokeColor = ContextCompat.getColor(
+            requireContext(),
+            R.color.border_color
+        )
+
         setupDefaultDate()
         binding.actvCategory.setText(ItemCategory.ELECTRONICS.displayName, false)
         binding.tilTitle.error = null

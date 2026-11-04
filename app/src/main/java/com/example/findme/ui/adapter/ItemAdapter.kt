@@ -11,6 +11,7 @@ import com.example.findme.R
 import com.example.findme.databinding.ItemCardPostBinding
 import com.example.findme.model.ItemModel
 import com.example.findme.model.ItemType
+import com.example.findme.utils.ImageUtils
 
 class ItemAdapter(
     private val onItemClick: (ItemModel) -> Unit
@@ -52,6 +53,20 @@ class ItemAdapter(
                 binding.tvTypeBadge.setTextColor(ContextCompat.getColor(context, R.color.found_badge_text))
             }
 
+            // Display item photo if available, otherwise hide the photo container
+            if (item.imageUri != null || item.imageResId != null) {
+                binding.cardPhotoContainer.visibility = View.VISIBLE
+                ImageUtils.loadItemImage(
+                    binding.ivItemPhoto,
+                    item.imageUri,
+                    item.imageResId,
+                    targetWidth = 600,
+                    targetHeight = 450
+                )
+            } else {
+                binding.cardPhotoContainer.visibility = View.GONE
+            }
+
             binding.root.setOnClickListener {
                 onItemClick(item)
             }
@@ -70,4 +85,3 @@ class ItemAdapter(
         }
     }
 }
-

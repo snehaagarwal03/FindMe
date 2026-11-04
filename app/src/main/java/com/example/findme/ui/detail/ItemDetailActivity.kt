@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import com.example.findme.R
 import com.example.findme.databinding.ActivityItemDetailBinding
 import com.example.findme.model.ItemModel
 import com.example.findme.model.ItemType
+import com.example.findme.utils.ImageUtils
 
 class ItemDetailActivity : AppCompatActivity() {
 
@@ -69,6 +71,19 @@ class ItemDetailActivity : AppCompatActivity() {
         binding.tvDetailDate.text = currentItem.date
         binding.tvDetailDescription.text = currentItem.description
         binding.tvDetailContact.text = currentItem.contactInfo
+
+        if (currentItem.imageUri != null || currentItem.imageResId != null) {
+            binding.cardDetailPhoto.visibility = View.VISIBLE
+            ImageUtils.loadItemImage(
+                binding.ivDetailPhoto,
+                currentItem.imageUri,
+                currentItem.imageResId,
+                targetWidth = 1000,
+                targetHeight = 750
+            )
+        } else {
+            binding.cardDetailPhoto.visibility = View.GONE
+        }
 
         if (currentItem.type == ItemType.LOST) {
             binding.tvDetailTypeBadge.text = "LOST"

@@ -1,5 +1,7 @@
 package com.example.findme.model
 
+import com.example.findme.R
+
 object SampleData {
     private val items = mutableListOf(
         ItemModel(
@@ -11,7 +13,8 @@ object SampleData {
             date = "Nov 2, 2026",
             description = "Left on study desk near the north window. Has an Octocat sticker on the lid and a small scratch on the bottom casing.",
             contactInfo = "john.doe@campus.edu",
-            isMyReport = true
+            isMyReport = true,
+            imageResId = R.drawable.ic_sample_laptop
         ),
         ItemModel(
             id = "2",
@@ -22,7 +25,8 @@ object SampleData {
             date = "Nov 3, 2026",
             description = "Blue insulated water bottle found by locker 42. Features a campus engineering sticker. Handed over to the gym reception desk.",
             contactInfo = "gym-desk@campus.edu",
-            isMyReport = false
+            isMyReport = false,
+            imageResId = R.drawable.ic_sample_water_bottle
         ),
         ItemModel(
             id = "3",
@@ -33,7 +37,8 @@ object SampleData {
             date = "Nov 1, 2026",
             description = "Lost official university student ID card during lunch rush near checkout register 2. Needed urgently for dorm access.",
             contactInfo = "sarah.c@campus.edu",
-            isMyReport = true
+            isMyReport = true,
+            imageResId = R.drawable.ic_sample_id_card
         ),
         ItemModel(
             id = "4",
@@ -44,7 +49,8 @@ object SampleData {
             date = "Nov 3, 2026",
             description = "Dorm key, bike lock key, and a silver padlock key attached to a red aluminium carabiner clip.",
             contactInfo = "campus-security@campus.edu",
-            isMyReport = false
+            isMyReport = false,
+            imageResId = R.drawable.ic_sample_keys
         ),
         ItemModel(
             id = "5",
@@ -55,7 +61,8 @@ object SampleData {
             date = "Oct 31, 2026",
             description = "Black over-ear headphones in an original black zipper case with an audio cable inside.",
             contactInfo = "alex.w@campus.edu",
-            isMyReport = false
+            isMyReport = false,
+            imageResId = R.drawable.ic_sample_headphones
         ),
         ItemModel(
             id = "6",
@@ -66,7 +73,8 @@ object SampleData {
             date = "Nov 2, 2026",
             description = "Hardcover textbook left on the lecture podium after the 10:00 AM session. First name 'David' handwritten on inner cover.",
             contactInfo = "prof-math@campus.edu",
-            isMyReport = false
+            isMyReport = false,
+            imageResId = R.drawable.ic_sample_book
         )
     )
 

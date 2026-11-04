@@ -28,7 +28,15 @@
     <string name="hint_description">Provide distinguishing details, color, brand, serial marks…</string>
     <string name="label_contact">Contact Information</string>
     <string name="hint_contact">e.g., student.id@campus.edu or 555-0199</string>
-    <string name="btn_add_photo">Select Photo</string>
+    <string name="label_photo_required">Item Photo *</string>
+    <string name="photo_required_subtitle">Take a clear photo or upload one from your gallery</string>
+    <string name="btn_add_photo">Add Item Photo</string>
+    <string name="btn_change_photo">Change Photo</string>
+    <string name="error_photo_required">Please add a photo of the item before submitting.</string>
+    <string name="photo_dialog_title">Select Photo Source</string>
+    <string name="photo_dialog_change_title">Change Photo</string>
+    <string name="option_camera">Take Photo with Camera</string>
+    <string name="option_gallery">Choose from Gallery</string>
     <string name="btn_submit_report">Submit Report</string>
 
     <!-- Categories -->

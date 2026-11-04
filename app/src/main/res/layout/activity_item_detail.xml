@@ -36,6 +36,26 @@
             android:orientation="vertical"
             android:padding="20dp">
 
+            <!-- Item Photo Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardDetailPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/campus_surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/border_color"
+                app:strokeWidth="1dp">
+
+                <ImageView
+                    android:id="@+id/ivDetailPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    tools:srcCompat="@drawable/ic_sample_laptop" />
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- Primary Info Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"

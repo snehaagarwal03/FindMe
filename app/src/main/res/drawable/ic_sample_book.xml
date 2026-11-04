@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+    <path
+        android:fillColor="#ECFDF5"
+        android:pathData="M0,0h200v150h-200z" />
+    <!-- Book Cover Spine & Shadow -->
+    <path
+        android:fillColor="#047857"
+        android:pathData="M40,24h108c6.6,0 12,5.4 12,12v84c0,6.6 -5.4,12 -12,12H40V24z" />
+    <!-- Book Pages Edge -->
+    <path
+        android:fillColor="#F8FAFC"
+        android:pathData="M52,30h96c3.3,0 6,2.7 6,6v74c0,3.3 -2.7,6 -6,6H52V30z" />
+    <!-- Book Spine Edge -->
+    <path
+        android:fillColor="#065F46"
+        android:pathData="M40,24h12v108H40z" />
+    <!-- Cover Design Shapes -->
+    <path
+        android:fillColor="#10B981"
+        android:pathData="M60,42h80v42H60z" />
+    <!-- Gold Title on Cover -->
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M70,54h60v5H70z" />
+    <path
+        android:fillColor="#FDE68A"
+        android:pathData="M70,64h42v4H70z" />
+    <path
+        android:fillColor="#064E3B"
+        android:pathData="M70,96h60v4H70z" />
+</vector>
+

@@ -1,0 +1,47 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+    <path
+        android:fillColor="#FEF3C7"
+        android:pathData="M0,0h200v150h-200z" />
+    <!-- ID Card Base -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M45,25h110c5.5,0 10,4.5 10,10v80c0,5.5 -4.5,10 -10,10H45c-5.5,0 -10,-4.5 -10,-10V35c0,-5.5 4.5,-10 10,-10z" />
+    <!-- Top Campus Header Band -->
+    <path
+        android:fillColor="#D97706"
+        android:pathData="M35,35c0,-5.5 4.5,-10 10,-10h110c5.5,0 10,4.5 10,10v12H35V35z" />
+    <!-- Lanyard Slot -->
+    <path
+        android:fillColor="#FEF3C7"
+        android:pathData="M90,28h20c1.5,0 3,1 3,2s-1.5,2 -3,2H90c-1.5,0 -3,-1 -3,-2s1.5,-2 3,-2z" />
+    <!-- Photo Avatar Box -->
+    <path
+        android:fillColor="#FDE68A"
+        android:pathData="M50,56h34v38H50z" />
+    <!-- Photo Avatar Head & Shoulders -->
+    <path
+        android:fillColor="#B45309"
+        android:pathData="M67,70m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0" />
+    <path
+        android:fillColor="#B45309"
+        android:pathData="M55,90c0,-6 5,-10 12,-10s12,4 12,10v4H55z" />
+    <!-- Card Info Lines -->
+    <path
+        android:fillColor="#451A03"
+        android:pathData="M94,62h52v5H94z" />
+    <path
+        android:fillColor="#78350F"
+        android:pathData="M94,73h40v4H94z" />
+    <path
+        android:fillColor="#92400E"
+        android:pathData="M94,83h32v4H94z" />
+    <!-- Barcode Strip -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M50,104h100v8H50z" />
+</vector>
+

@@ -1,0 +1,33 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+    <path
+        android:fillColor="#E0F2FE"
+        android:pathData="M0,0h200v150h-200z" />
+    <!-- Bottle Cap Loop -->
+    <path
+        android:fillColor="#0284C7"
+        android:pathData="M92,20h16c3.3,0 6,2.7 6,6v8h-28v-8c0,-3.3 2.7,-6 6,-6z" />
+    <!-- Cap Neck -->
+    <path
+        android:fillColor="#0369A1"
+        android:pathData="M88,34h24v8H88z" />
+    <!-- Bottle Body -->
+    <path
+        android:fillColor="#0284C7"
+        android:pathData="M80,44h40c5.5,0 10,4.5 10,10v68c0,5.5 -4.5,10 -10,10H80c-5.5,0 -10,-4.5 -10,-10V54c0,-5.5 4.5,-10 10,-10z" />
+    <!-- Bottle Accent Band -->
+    <path
+        android:fillColor="#38BDF8"
+        android:pathData="M70,72h60v16H70z" />
+    <!-- Bottle Grip Lines -->
+    <path
+        android:fillColor="#0369A1"
+        android:pathData="M78,100h44v4H78z" />
+    <path
+        android:fillColor="#0369A1"
+        android:pathData="M78,108h44v4H78z" />
+</vector>
+

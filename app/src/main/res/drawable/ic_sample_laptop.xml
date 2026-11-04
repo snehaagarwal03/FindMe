@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+    <path
+        android:fillColor="#E2E8F0"
+        android:pathData="M0,0h200v150h-200z" />
+    <!-- Screen frame -->
+    <path
+        android:fillColor="#334155"
+        android:pathData="M40,32h120c4.4,0 8,3.6 8,8v64H32V40c0,-4.4 3.6,-8 8,-8z" />
+    <!-- Screen display -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M44,38h112v58H44z" />
+    <!-- Screen content preview -->
+    <path
+        android:fillColor="#38BDF8"
+        android:pathData="M56,52h36v6H56z" />
+    <path
+        android:fillColor="#94A3B8"
+        android:pathData="M56,64h50v4H56z" />
+    <path
+        android:fillColor="#94A3B8"
+        android:pathData="M56,72h70v4H56z" />
+    <!-- Laptop base -->
+    <path
+        android:fillColor="#64748B"
+        android:pathData="M20,104h160c4.4,0 8,3.6 8,8v4H12v-4c0,-4.4 3.6,-8 8,-8z" />
+    <!-- Trackpad notch -->
+    <path
+        android:fillColor="#94A3B8"
+        android:pathData="M88,104h24v3H88z" />
+</vector>
+

@@ -1,0 +1,33 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+    <path
+        android:fillColor="#FEE2E2"
+        android:pathData="M0,0h200v150h-200z" />
+    <!-- Carabiner Red Ring -->
+    <path
+        android:fillColor="#EF4444"
+        android:pathData="M100,25c16.5,0 30,13.5 30,30s-13.5,30 -30,30s-30,-13.5 -30,-30s13.5,-30 30,-30m0,10c-11,0 -20,9 -20,20s9,20 20,20s20,-9 20,-20s-9,-20 -20,-20z" />
+    <!-- Carabiner Gate -->
+    <path
+        android:fillColor="#991B1B"
+        android:pathData="M125,48h8v14h-8z" />
+    <!-- Key 1 (Silver) -->
+    <path
+        android:fillColor="#94A3B8"
+        android:pathData="M95,80h10v45h-10z" />
+    <path
+        android:fillColor="#94A3B8"
+        android:pathData="M105,105h6v5h-6zm0,12h6v5h-6z" />
+    <!-- Key 2 (Brass / Gold) -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M80,82l8,6l-20,38l-8,-6z" />
+    <!-- Key 3 (Small dorm key) -->
+    <path
+        android:fillColor="#64748B"
+        android:pathData="M112,82l-6,8l24,36l6,-8z" />
+</vector>
+

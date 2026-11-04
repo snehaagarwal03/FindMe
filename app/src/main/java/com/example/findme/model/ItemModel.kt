@@ -27,7 +27,9 @@ data class ItemModel(
     val description: String,
     val contactInfo: String,
     val isMyReport: Boolean = false,
-    val isResolved: Boolean = false
+    val isResolved: Boolean = false,
+    val imageUri: String? = null,
+    val imageResId: Int? = null
 ) : Serializable {
     val displayCategory: String
         get() = if (category == ItemCategory.OTHER && !customCategory.isNullOrBlank()) {

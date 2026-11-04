@@ -206,16 +206,24 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="Item Photo (Optional)"
+            android:layout_marginTop="20dp"
+            android:text="@string/label_photo_required"
             android:textColor="@color/text_primary"
             android:textSize="14sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@string/photo_required_subtitle"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardSelectPhoto"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="170dp"
             android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="true"
@@ -224,45 +232,128 @@
             app:strokeColor="@color/border_color"
             app:strokeWidth="1dp">
 
-            <LinearLayout
-                android:id="@+id/layoutPhotoPlaceholder"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
+                <!-- Placeholder state -->
+                <LinearLayout
+                    android:id="@+id/layoutPhotoPlaceholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:src="@drawable/ic_photo_camera"
+                        app:tint="@color/campus_accent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/btn_add_photo"
+                        android:textColor="@color/campus_accent"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Tap to capture photo or choose from gallery"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <!-- Preview state -->
                 <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:src="@drawable/ic_photo_camera"
-                    app:tint="@color/campus_accent" />
+                    android:id="@+id/ivSelectedPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
 
-                <TextView
+                <!-- Change Photo badge overlay -->
+                <LinearLayout
+                    android:id="@+id/layoutChangePhotoBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="@string/btn_add_photo"
-                    android:textColor="@color/campus_accent"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/bg_badge_found"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="6dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="Tap to open photo picker"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp" />
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_photo_camera"
+                        app:tint="@color/found_badge_text" />
 
-            <ImageView
-                android:id="@+id/ivSelectedPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:visibility="gone"
-                tools:visibility="gone" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/btn_change_photo"
+                        android:textColor="@color/found_badge_text"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- Quick Action Buttons for Camera & Gallery -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCaptureCamera"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:text="Take Photo"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_photo_camera"
+                app:iconSize="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPickGallery"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:text="Choose Gallery"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_photo_placeholder"
+                app:iconSize="16dp" />
+        </LinearLayout>
+
+        <!-- Compulsory Photo Validation Error -->
+        <TextView
+            android:id="@+id/tvPhotoError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/lost_badge_text"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="@string/error_photo_required"
+            tools:visibility="visible" />
 
         <!-- Submit Button -->
         <com.google.android.material.button.MaterialButton
