@@ -310,38 +310,6 @@
             </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Quick Action Buttons for Camera & Gallery -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCaptureCamera"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                android:text="Take Photo"
-                android:textSize="12sp"
-                app:icon="@drawable/ic_photo_camera"
-                app:iconSize="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnPickGallery"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                android:text="Choose Gallery"
-                android:textSize="12sp"
-                app:icon="@drawable/ic_photo_placeholder"
-                app:iconSize="16dp" />
-        </LinearLayout>
-
         <!-- Compulsory Photo Validation Error -->
         <TextView
             android:id="@+id/tvPhotoError"

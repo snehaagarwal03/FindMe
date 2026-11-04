@@ -1,5 +1,6 @@
 package com.example.findme.model
 
+import com.example.findme.data.db.ItemEntity
 import java.io.Serializable
 
 enum class ItemType {
@@ -25,7 +26,7 @@ data class ItemModel(
     val location: String,
     val date: String,
     val description: String,
-    val contactInfo: String,
+    val contactInfo: String? = null,
     val isMyReport: Boolean = false,
     val isResolved: Boolean = false,
     val imageUri: String? = null,
@@ -38,3 +39,20 @@ data class ItemModel(
             category.displayName
         }
 }
+
+/** Converts a Room entity into a UI model. */
+fun ItemEntity.toItemModel(): ItemModel = ItemModel(
+    id = id,
+    title = title,
+    type = type,
+    category = category,
+    customCategory = customCategory,
+    location = location,
+    date = date,
+    description = description,
+    contactInfo = contactInfo,
+    isMyReport = isMyReport,
+    isResolved = isResolved,
+    imageUri = imagePath,
+    imageResId = imageResId
+)

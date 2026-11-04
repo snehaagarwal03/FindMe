@@ -8,24 +8,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.findme.R
+import com.example.findme.data.preferences.FindMePreferences
 import com.example.findme.databinding.FragmentHomeBinding
-import com.example.findme.model.ItemModel
 import com.example.findme.model.ItemType
-import com.example.findme.model.SampleData
+import com.example.findme.model.toItemModel
 import com.example.findme.ui.adapter.ItemAdapter
 import com.example.findme.ui.detail.ItemDetailActivity
+import com.example.findme.ui.viewmodel.FindMeViewModel
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: FindMeViewModel by activityViewModels()
     private lateinit var itemAdapter: ItemAdapter
-    private var allItems: List<ItemModel> = emptyList()
-    private var currentFilterType: ItemType? = null
-    private var currentSearchQuery: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,19 +45,14 @@ class HomeFragment : Fragment() {
 
         setupRecyclerView()
         setupSearchAndFilters()
-        loadData()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Refresh data in case a new item was reported
-        loadData()
+        restoreSavedFilter()
+        observeItems()
     }
 
     private fun setupRecyclerView() {
         itemAdapter = ItemAdapter { selectedItem ->
             val intent = Intent(requireContext(), ItemDetailActivity::class.java).apply {
-                putExtra(ItemDetailActivity.EXTRA_ITEM, selectedItem)
+                putExtra(ItemDetailActivity.EXTRA_ITEM_ID, selectedItem.id)
             }
             startActivity(intent)
         }
@@ -69,52 +68,78 @@ class HomeFragment : Fragment() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                currentSearchQuery = s?.toString()?.trim().orEmpty()
-                applyFilters()
+                viewModel.searchQuery.value = s?.toString()?.trim().orEmpty()
             }
             override fun afterTextChanged(s: Editable?) {}
         })
 
         // Filter chips listener
         binding.chipGroupFilter.setOnCheckedStateChangeListener { _, checkedIds ->
-            currentFilterType = when {
-                checkedIds.contains(R.id.chipLost) -> ItemType.LOST
-                checkedIds.contains(R.id.chipFound) -> ItemType.FOUND
-                else -> null // All items
+            val filter = when {
+                checkedIds.contains(R.id.chipLost) -> FindMePreferences.FILTER_LOST
+                checkedIds.contains(R.id.chipFound) -> FindMePreferences.FILTER_FOUND
+                else -> FindMePreferences.FILTER_ALL
             }
-            applyFilters()
+            viewModel.setFilter(filter)
         }
     }
 
-    private fun loadData() {
-        allItems = SampleData.getAllItems()
-        applyFilters()
+    private fun restoreSavedFilter() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.currentFilter.collect { filter ->
+                // Select the chip matching the saved filter without re-triggering listener
+                val chipId = when (filter) {
+                    FindMePreferences.FILTER_LOST -> R.id.chipLost
+                    FindMePreferences.FILTER_FOUND -> R.id.chipFound
+                    else -> R.id.chipAll
+                }
+                if (binding.chipGroupFilter.checkedChipId != chipId) {
+                    binding.chipGroupFilter.check(chipId)
+                }
+            }
+        }
+        // Also load the persisted preference on first launch
+        viewModel.loadSavedFilter()
     }
 
-    private fun applyFilters() {
-        val filtered = allItems.filter { item ->
-            val matchesType = currentFilterType == null || item.type == currentFilterType
-            val matchesQuery = currentSearchQuery.isEmpty() ||
-                    item.title.contains(currentSearchQuery, ignoreCase = true) ||
-                    item.description.contains(currentSearchQuery, ignoreCase = true) ||
-                    item.location.contains(currentSearchQuery, ignoreCase = true) ||
-                    item.displayCategory.contains(currentSearchQuery, ignoreCase = true)
+    private fun observeItems() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.homeItems.collect { entities ->
+                    // Apply in-memory type filter when searching
+                    val currentQuery = viewModel.searchQuery.value
+                    val currentFilter = viewModel.currentFilter.value
 
-            matchesType && matchesQuery
-        }
+                    val filtered = if (currentQuery.isNotBlank() && currentFilter != FindMePreferences.FILTER_ALL) {
+                        val filterType = when (currentFilter) {
+                            FindMePreferences.FILTER_LOST -> ItemType.LOST
+                            FindMePreferences.FILTER_FOUND -> ItemType.FOUND
+                            else -> null
+                        }
+                        if (filterType != null) {
+                            entities.filter { it.type == filterType }
+                        } else {
+                            entities
+                        }
+                    } else {
+                        entities
+                    }
 
-        itemAdapter.submitList(filtered)
+                    val items = filtered.map { it.toItemModel() }
+                    itemAdapter.submitList(items)
 
-        binding.tvItemsCount.text = getString(R.string.filter_all).let {
-            "Showing ${filtered.size} item${if (filtered.size == 1) "" else "s"}"
-        }
+                    binding.tvItemsCount.text =
+                        "Showing ${items.size} item${if (items.size == 1) "" else "s"}"
 
-        if (filtered.isEmpty()) {
-            binding.rvItems.visibility = View.GONE
-            binding.layoutEmptyState.visibility = View.VISIBLE
-        } else {
-            binding.rvItems.visibility = View.VISIBLE
-            binding.layoutEmptyState.visibility = View.GONE
+                    if (items.isEmpty()) {
+                        binding.rvItems.visibility = View.GONE
+                        binding.layoutEmptyState.visibility = View.VISIBLE
+                    } else {
+                        binding.rvItems.visibility = View.VISIBLE
+                        binding.layoutEmptyState.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 
@@ -127,4 +152,3 @@ class HomeFragment : Fragment() {
         fun newInstance() = HomeFragment()
     }
 }
-

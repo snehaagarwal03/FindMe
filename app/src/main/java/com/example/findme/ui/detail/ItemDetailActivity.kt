@@ -13,16 +13,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.findme.FindMeApplication
 import com.example.findme.R
 import com.example.findme.databinding.ActivityItemDetailBinding
-import com.example.findme.model.ItemModel
+import com.example.findme.data.db.ItemEntity
+import com.example.findme.model.ItemCategory
 import com.example.findme.model.ItemType
 import com.example.findme.utils.ImageUtils
+import kotlinx.coroutines.launch
 
 class ItemDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityItemDetailBinding
-    private var item: ItemModel? = null
+    private var item: ItemEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,16 +40,8 @@ class ItemDetailActivity : AppCompatActivity() {
             insets
         }
 
-        item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getSerializableExtra(EXTRA_ITEM, ItemModel::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getSerializableExtra(EXTRA_ITEM) as? ItemModel
-        }
-
         setupToolbar()
-        populateDetails()
-        setupActions()
+        loadItem()
     }
 
     private fun setupToolbar() {
@@ -58,25 +54,49 @@ class ItemDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun populateDetails() {
-        val currentItem = item ?: run {
+    private fun loadItem() {
+        val itemId = intent.getStringExtra(EXTRA_ITEM_ID)
+
+        if (itemId.isNullOrBlank()) {
             Toast.makeText(this, "Item not found", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
+        val app = application as FindMeApplication
+        lifecycleScope.launch {
+            val entity = app.repository.getItemById(itemId)
+            if (entity == null) {
+                Toast.makeText(this@ItemDetailActivity, "Item no longer exists", Toast.LENGTH_SHORT).show()
+                finish()
+                return@launch
+            }
+            item = entity
+            populateDetails(entity)
+            setupActions(entity)
+        }
+    }
+
+    private fun populateDetails(currentItem: ItemEntity) {
         binding.tvDetailTitle.text = currentItem.title
-        binding.tvDetailCategory.text = currentItem.displayCategory
+
+        val displayCategory = if (currentItem.category == ItemCategory.OTHER && !currentItem.customCategory.isNullOrBlank()) {
+            currentItem.customCategory
+        } else {
+            currentItem.category.displayName
+        }
+        binding.tvDetailCategory.text = displayCategory
         binding.tvDetailLocation.text = currentItem.location
         binding.tvDetailDate.text = currentItem.date
         binding.tvDetailDescription.text = currentItem.description
-        binding.tvDetailContact.text = currentItem.contactInfo
+        binding.tvDetailContact.text = currentItem.contactInfo ?: "Not provided"
 
-        if (currentItem.imageUri != null || currentItem.imageResId != null) {
+        // Display item photo
+        if (currentItem.imagePath != null || currentItem.imageResId != null) {
             binding.cardDetailPhoto.visibility = View.VISIBLE
             ImageUtils.loadItemImage(
                 binding.ivDetailPhoto,
-                currentItem.imageUri,
+                currentItem.imagePath,
                 currentItem.imageResId,
                 targetWidth = 1000,
                 targetHeight = 750
@@ -98,25 +118,27 @@ class ItemDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupActions() {
+    private fun setupActions(currentItem: ItemEntity) {
         binding.btnContactAction.setOnClickListener {
-            item?.let { currentItem ->
-                val contact = currentItem.contactInfo
-                val intent = if (contact.contains("@")) {
-                    Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("mailto:$contact")
-                        putExtra(Intent.EXTRA_SUBJECT, "Regarding FindMe Post: ${currentItem.title}")
-                    }
-                } else {
-                    Intent(Intent.ACTION_DIAL).apply {
-                        data = Uri.parse("tel:$contact")
-                    }
+            val contact = currentItem.contactInfo
+            if (contact.isNullOrBlank()) {
+                Toast.makeText(this, "No contact information provided", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val intent = if (contact.contains("@")) {
+                Intent(Intent.ACTION_SENDTO).apply {
+                    data = Uri.parse("mailto:$contact")
+                    putExtra(Intent.EXTRA_SUBJECT, "Regarding FindMe Post: ${currentItem.title}")
                 }
-                try {
-                    startActivity(intent)
-                } catch (e: Exception) {
-                    Toast.makeText(this, "Contact info: $contact", Toast.LENGTH_LONG).show()
+            } else {
+                Intent(Intent.ACTION_DIAL).apply {
+                    data = Uri.parse("tel:$contact")
                 }
+            }
+            try {
+                startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Contact info: $contact", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -128,14 +150,19 @@ class ItemDetailActivity : AppCompatActivity() {
     private fun shareItem() {
         val currentItem = item ?: return
         val typeLabel = if (currentItem.type == ItemType.LOST) "LOST" else "FOUND"
+        val displayCategory = if (currentItem.category == ItemCategory.OTHER && !currentItem.customCategory.isNullOrBlank()) {
+            currentItem.customCategory
+        } else {
+            currentItem.category.displayName
+        }
         val shareText = """
             [FindMe - Campus Lost & Found]
             Item: ${currentItem.title} ($typeLabel)
-            Category: ${currentItem.displayCategory}
+            Category: $displayCategory
             Location: ${currentItem.location}
             Date: ${currentItem.date}
             Description: ${currentItem.description}
-            Contact: ${currentItem.contactInfo}
+            Contact: ${currentItem.contactInfo ?: "Not provided"}
         """.trimIndent()
 
         val sendIntent = Intent().apply {
@@ -166,7 +193,6 @@ class ItemDetailActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val EXTRA_ITEM = "extra_item"
+        const val EXTRA_ITEM_ID = "extra_item_id"
     }
 }
-

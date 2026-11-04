@@ -1,6 +1,8 @@
 package com.example.findme.ui.report
 
+import android.Manifest
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +13,20 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.findme.R
+import com.example.findme.data.db.ItemEntity
 import com.example.findme.databinding.FragmentReportBinding
 import com.example.findme.model.ItemCategory
-import com.example.findme.model.ItemModel
 import com.example.findme.model.ItemType
-import com.example.findme.model.SampleData
+import com.example.findme.ui.viewmodel.FindMeViewModel
 import com.example.findme.utils.FileUtils
+import com.example.findme.utils.NotificationHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -30,12 +38,18 @@ class ReportFragment : Fragment() {
     private var _binding: FragmentReportBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: FindMeViewModel by activityViewModels()
+
     private var selectedImageUri: Uri? = null
     private var tempCameraFile: File? = null
     private var tempCameraUri: Uri? = null
 
     private lateinit var pickMediaLauncher: ActivityResultLauncher<PickVisualMediaRequest>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
+    private lateinit var notificationPermissionLauncher: ActivityResultLauncher<String>
+
+    // Track pending submission so we can fire notification after permission grant
+    private var pendingNotificationItem: ItemEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +62,10 @@ class ReportFragment : Fragment() {
                 selectedImageUri = uri
                 displaySelectedPhoto(uri)
             }
-            // If uri == null, user cancelled picker: preserve existing selection!
+            // If null, user cancelled picker — preserve existing selection
         }
 
-        // Native Camera Capture launcher (TakePicture contract with FileProvider content URI)
+        // Native Camera Capture launcher
         takePictureLauncher = registerForActivityResult(
             ActivityResultContracts.TakePicture()
         ) { success: Boolean ->
@@ -59,12 +73,19 @@ class ReportFragment : Fragment() {
                 selectedImageUri = tempCameraUri
                 displaySelectedPhoto(tempCameraUri!!)
             } else {
-                // If cancelled or failed, cleanup the temporary file if it was not already selected
+                // Cancelled or failed — clean up temp file if it wasn't the current selection
                 if (selectedImageUri != tempCameraUri) {
                     tempCameraFile?.delete()
                 }
-                // Existing selectedImageUri is preserved!
             }
+        }
+
+        // Notification permission launcher (Android 13+)
+        notificationPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { _ ->
+            // Permission result doesn't block submission —
+            // notification was already attempted or will be attempted
         }
     }
 
@@ -84,6 +105,7 @@ class ReportFragment : Fragment() {
         setupDefaultDate()
         setupPhotoSelectionControls()
         setupSubmitButton()
+        observeSubmitResult()
     }
 
     private fun setupCategoryDropdown() {
@@ -116,16 +138,6 @@ class ReportFragment : Fragment() {
         // Tapping on the photo card triggers source selection dialog
         binding.cardSelectPhoto.setOnClickListener {
             showPhotoSourceDialog()
-        }
-
-        // Direct Take Photo button
-        binding.btnCaptureCamera.setOnClickListener {
-            launchCamera()
-        }
-
-        // Direct Choose from Gallery button
-        binding.btnPickGallery.setOnClickListener {
-            launchGallery()
         }
     }
 
@@ -182,7 +194,7 @@ class ReportFragment : Fragment() {
         binding.ivSelectedPhoto.setImageURI(null)
         binding.ivSelectedPhoto.setImageURI(uri)
 
-        // Clear photo validation error if it was previously triggered
+        // Clear photo validation error
         binding.tvPhotoError.visibility = View.GONE
         binding.cardSelectPhoto.strokeColor = ContextCompat.getColor(
             requireContext(),
@@ -198,12 +210,61 @@ class ReportFragment : Fragment() {
         }
     }
 
+    private fun observeSubmitResult() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.submitResult.collect { result ->
+                        when (result) {
+                            is FindMeViewModel.SubmitResult.Success -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Report submitted successfully!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                resetForm()
+
+                                // Request notification permission if needed (Android 13+)
+                                requestNotificationPermissionIfNeeded()
+                            }
+                            is FindMeViewModel.SubmitResult.Error -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    result.message,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.isSubmitting.collect { submitting ->
+                        binding.btnSubmit.isEnabled = !submitting
+                        binding.btnSubmit.text = if (submitting) {
+                            "Submitting…"
+                        } else {
+                            getString(R.string.btn_submit_report)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!NotificationHelper.hasNotificationPermission(requireContext())) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
     private fun validateForm(): Boolean {
         var isValid = true
 
         val title = binding.etTitle.text?.toString()?.trim().orEmpty()
         val location = binding.etLocation.text?.toString()?.trim().orEmpty()
-        val contact = binding.etContact.text?.toString()?.trim().orEmpty()
         val categoryName = binding.actvCategory.text.toString()
 
         if (title.isEmpty()) {
@@ -218,13 +279,6 @@ class ReportFragment : Fragment() {
             isValid = false
         } else {
             binding.tilLocation.error = null
-        }
-
-        if (contact.isEmpty()) {
-            binding.tilContact.error = "Please provide contact info (e.g. campus email)"
-            isValid = false
-        } else {
-            binding.tilContact.error = null
         }
 
         // Validate custom category if 'Other' is selected
@@ -278,8 +332,9 @@ class ReportFragment : Fragment() {
         }
 
         val categoryName = binding.actvCategory.text.toString()
-        val category = ItemCategory.values().firstOrNull { it.displayName.equals(categoryName, ignoreCase = true) }
-            ?: ItemCategory.OTHER
+        val category = ItemCategory.values().firstOrNull {
+            it.displayName.equals(categoryName, ignoreCase = true)
+        } ?: ItemCategory.OTHER
 
         val customCategory = if (category == ItemCategory.OTHER) {
             binding.etCustomCategory.text?.toString()?.trim()
@@ -291,7 +346,7 @@ class ReportFragment : Fragment() {
         val location = binding.etLocation.text?.toString()?.trim().orEmpty()
         val date = binding.etDate.text?.toString()?.trim().orEmpty()
         val description = binding.etDescription.text?.toString()?.trim().orEmpty()
-        val contact = binding.etContact.text?.toString()?.trim().orEmpty()
+        val contact = binding.etContact.text?.toString()?.trim()
 
         val itemId = UUID.randomUUID().toString()
 
@@ -302,6 +357,15 @@ class ReportFragment : Fragment() {
             itemId
         )
 
+        if (internalImagePath == null) {
+            Toast.makeText(
+                requireContext(),
+                "Failed to save the photo. Please try selecting another image.",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
         // If the photo was a temporary camera capture, delete the temp file from cache
         if (photoUri == tempCameraUri) {
             tempCameraFile?.delete()
@@ -309,7 +373,7 @@ class ReportFragment : Fragment() {
             tempCameraUri = null
         }
 
-        val newItem = ItemModel(
+        val newItem = ItemEntity(
             id = itemId,
             title = title,
             type = itemType,
@@ -318,16 +382,13 @@ class ReportFragment : Fragment() {
             location = location,
             date = date,
             description = description.ifEmpty { "No additional details provided." },
-            contactInfo = contact,
+            contactInfo = contact?.ifEmpty { null },
             isMyReport = true,
-            imageUri = internalImagePath
+            imagePath = internalImagePath,
+            createdAt = System.currentTimeMillis()
         )
 
-        SampleData.addItem(newItem)
-
-        Toast.makeText(requireContext(), "Report submitted successfully!", Toast.LENGTH_LONG).show()
-
-        resetForm()
+        viewModel.submitReport(newItem)
     }
 
     private fun resetForm() {
@@ -359,7 +420,6 @@ class ReportFragment : Fragment() {
         binding.actvCategory.setText(ItemCategory.ELECTRONICS.displayName, false)
         binding.tilTitle.error = null
         binding.tilLocation.error = null
-        binding.tilContact.error = null
     }
 
     override fun onDestroyView() {
