@@ -19,7 +19,7 @@
 | :---: | :---: |
 | <img src="https://github.com/user-attachments/assets/c2ea1070-1c46-4e5b-93f1-cdbdc2c6a0fd" width="280" alt="Home Screen — Browse & Search" /> | <img src="https://github.com/user-attachments/assets/ac68bedc-1bad-4283-ab4b-5b85ba850c9e" width="280" alt="Report Screen — Submission Form" /> |
 
-| My Reports | Item Details & Completion |
+| My Reports | Item Details & Contact |
 | :---: | :---: |
 | <img src="https://github.com/user-attachments/assets/87358332-eea5-433f-ae60-13eec4e9bd5c" width="280" alt="My Reports — Active & Past" /> | <img src="https://github.com/user-attachments/assets/9c48149c-a3d7-4e7c-a2ea-0c1097b89858" width="280" alt="Item Details — Status & Actions" /> |
 
