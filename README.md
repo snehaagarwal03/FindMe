@@ -18,11 +18,11 @@
 
 | Home Screen | Report Item |
 | :---: | :---: |
-| <img src="https://github.com/user-attachments/assets/c2ea1070-1c46-4e5b-93f1-cdbdc2c6a0fd" width="280" alt="Home Screen — Browse & Search" /><br><sub><b>Browse, Search & Filter Items</b></sub> | <img src="https://github.com/user-attachments/assets/ac68bedc-1bad-4283-ab4b-5b85ba850c9e" width="280" alt="Report Screen — Submission Form" /><br><sub><b>Item Reporting & Photo Capture</b></sub> |
+| <img src="https://github.com/user-attachments/assets/c2ea1070-1c46-4e5b-93f1-cdbdc2c6a0fd" width="280" alt="Home Screen — Browse & Search" /><br> | <img src="https://github.com/user-attachments/assets/ac68bedc-1bad-4283-ab4b-5b85ba850c9e" width="280" alt="Report Screen — Submission Form" /><br> |
 
 | My Reports | Item Details & Completion |
 | :---: | :---: |
-| <img src="https://github.com/user-attachments/assets/87358332-eea5-433f-ae60-13eec4e9bd5c" width="280" alt="My Reports — Active & Past" /><br><sub><b>Personal Reports (Active / Past)</b></sub> | <img src="https://github.com/user-attachments/assets/63e0e19c-f0c5-4998-a762-eb8dba06d4bc" width="280" alt="Item Details — Status & Actions" /><br><sub><b>Item Details & Completion Workflow</b></sub> |
+| <img src="https://github.com/user-attachments/assets/87358332-eea5-433f-ae60-13eec4e9bd5c" width="280" alt="My Reports — Active & Past" /><br> | <img src="https://github.com/user-attachments/assets/63e0e19c-f0c5-4998-a762-eb8dba06d4bc" width="280" alt="Item Details — Status & Actions" /><br> |
 
 ---
 
