@@ -2,6 +2,16 @@
 
 **FindMe** is a native Android application designed to help university students and campus staff report, track, and recover lost and found belongings. Built with an offline-first architecture, the application relies entirely on native Android components, local persistence with Room Database, and on-device private storage without any backend or third-party cloud dependencies.
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android" />
+  <img src="https://img.shields.io/badge/Language-Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin" />
+  <img src="https://img.shields.io/badge/Architecture-MVVM-009688?style=for-the-badge" alt="MVVM" />
+  <img src="https://img.shields.io/badge/Database-Room%20SQLite-4285F4?style=for-the-badge&logo=sqlite&logoColor=white" alt="Room SQLite" />
+  <img src="https://img.shields.io/badge/UI-Material%20Design%203-FF7043?style=for-the-badge&logo=materialdesign&logoColor=white" alt="Material Design 3" />
+  <img src="https://img.shields.io/badge/Async-Coroutines%20%26%20Flow-02569B?style=for-the-badge&logo=kotlin&logoColor=white" alt="Coroutines & Flow" />
+  <img src="https://img.shields.io/badge/Storage-Jetpack%20DataStore-F4B400?style=for-the-badge&logo=android&logoColor=white" alt="Jetpack DataStore" />
+</p>
+
 ---
 
 ## Screen Highlights
@@ -41,42 +51,20 @@
 
 ## Tech Stack & Architecture
 
-- **Language**: Kotlin
-- **Architecture**: MVVM (Model-View-ViewModel) + Repository Pattern
-- **UI & Layouts**: Native XML layouts, Material Design 3 (`MaterialCardView`, `TabLayout`, `BottomNavigationView`, `MaterialAutoCompleteTextView`, `MaterialButtonToggleGroup`), ViewBinding
-- **Local Persistence**: Jetpack Room Database (SQLite) with non-destructive schema migrations
-- **Preferences**: Jetpack DataStore Preferences
-- **Asynchronous / Concurrency**: Kotlin Coroutines & reactive `Flow` (`StateFlow`, `SharedFlow`)
-- **System Integration & Media**:
-  - Android Photo Picker (`ActivityResultContracts.PickVisualMedia`)
-  - Camera Capture (`ActivityResultContracts.TakePicture`)
-  - Android `FileProvider` for secure content URI sharing
-  - Native `BitmapFactory` sample sizing & `android.media.ExifInterface` rotation handling
-  - `NotificationManagerCompat` & Notification Channels
-
----
-
-## What We Have Done
-
-1. **Stage 1 — Core UI & Navigation**:
-   - Built `MainActivity` hosting a single-activity container with `BottomNavigationView`.
-   - Developed `HomeFragment`, `ReportFragment`, `MyReportsFragment`, and `ItemDetailActivity`.
-   - Integrated full edge-to-edge support and soft-keyboard window insets (`WindowInsetsCompat.Type.ime()`) to keep bottom navigation and input fields accessible.
-2. **Stage 2 — Native Photo Selection & Image Pipeline**:
-   - Integrated Android Photo Picker and camera capture via `FileProvider`.
-   - Enforced mandatory photo attachment validation on report submissions.
-   - Built memory-efficient downsampled bitmap decoding (`inSampleSize`) and EXIF orientation correction using strictly standard Android APIs (no Glide, Picasso, or Coil).
-3. **Stage 3 — Persistence with Room Database**:
-   - Replaced in-memory sample lists with persistent SQLite storage using Room.
-   - Designed `ItemEntity`, `ItemDao`, and `ItemRepository` with reactive `Flow` queries.
-   - Seeded initial demonstration items on first launch using DataStore-backed initialization flags.
-4. **Stage 4 — Local Notifications**:
-   - Created `NotificationHelper` and a dedicated notification channel for report confirmation alerts.
-   - Handled Android 13+ `POST_NOTIFICATIONS` runtime permission requests gracefully.
-5. **Stage 5 — Report Completion Workflow & Schema Migration**:
-   - Added `isCompleted` tracking to `ItemEntity` with non-destructive Room migration (`MIGRATION_1_2`).
-   - Implemented owner-only completion checkboxes, confirmation dialogs, and non-editable completed status cards in `ItemDetailActivity`.
-   - Updated `HomeFragment` to display active listings only, and integrated **Active** / **Past** tabs in `MyReportsFragment`.
+| Technology / Component | Role & Usage in FindMe |
+| :--- | :--- |
+| **Kotlin** | Primary language used for the complete codebase. |
+| **MVVM + Repository** | Architectural pattern separating UI controllers, state management, and data access. |
+| **Room Database (SQLite)** | On-device persistent relational database storing item reports, statuses, and ownership with schema migrations. |
+| **Kotlin Coroutines & Flow** | Asynchronous operations and reactive streams (`StateFlow`, `SharedFlow`) that automatically push live updates to the UI. |
+| **Material Design 3 & XML** | Native styling, themes, and Material 3 components (`MaterialCardView`, `TabLayout`, `BottomNavigationView`, `MaterialAutoCompleteTextView`, `MaterialButtonToggleGroup`). |
+| **ViewBinding** | Compile-time safe view referencing eliminating boilerplate and `findViewById` calls. |
+| **Android Photo Picker (`PickVisualMedia`)** | Privacy-first media picker to select gallery photos without requiring broad storage permissions. |
+| **System Camera (`TakePicture`) & FileProvider** | Delegates photo capture to the native camera app and receives images via secure content URIs. |
+| **Internal App Storage (`filesDir`)** | Sandboxed local directory (`files/items/`) where picked and captured photos are permanently copied. |
+| **Native Bitmap Processing & ExifInterface** | Performs dynamic downsampling (`inSampleSize`) to eliminate `OutOfMemoryError` risk and corrects camera EXIF rotation. |
+| **Jetpack DataStore Preferences** | Key-value storage for persistent UI preferences (such as selected filter chips and sample data seeding state). |
+| **NotificationManagerCompat** | Delivers local submission confirmation notifications and notification channel management (compatible with Android 13+). |
 
 ---
 
@@ -87,29 +75,6 @@
 - **Production-Grade Media Handling**: Prevents `OutOfMemoryError` crashes by dynamically calculating bitmap sample sizes prior to decoding high-resolution smartphone camera pictures, and corrects sideways camera captures via EXIF orientation matrices.
 - **Non-Destructive Database Evolution**: Demonstrates production database migration practices by safely migrating SQLite tables between versions while preserving existing records and photos.
 - **Privacy & Offline Resilience**: Ensures user lost-and-found data, contact details, and photos remain on the user's device in sandboxed app-specific storage.
-
----
-
-## Project Structure
-
-```text
-com.example.findme/
-├── data/
-│   ├── db/                 # Room Database, ItemEntity, ItemDao, Converters
-│   ├── preferences/        # Jetpack DataStore preference management
-│   └── repository/         # ItemRepository bridging DAO and ViewModel
-├── model/                  # Domain models (ItemModel, ItemType, ItemCategory, SampleData)
-├── ui/
-│   ├── adapter/            # RecyclerView ItemAdapter
-│   ├── detail/             # ItemDetailActivity
-│   ├── home/               # HomeFragment (Search & Filter feed)
-│   ├── myreports/          # MyReportsFragment (Active vs. Past tabs)
-│   ├── report/             # ReportFragment (Item creation form)
-│   └── viewmodel/          # FindMeViewModel
-├── utils/                  # FileUtils, ImageUtils, NotificationHelper
-├── FindMeApplication.kt    # Application class (channel setup & database seeding)
-└── MainActivity.kt         # Main container with BottomNavigationView
-```
 
 ---
 
@@ -125,4 +90,3 @@ com.example.findme/
 3. **Build & Run**:
    - Ensure a device or emulator running **API 26 (Android 8.0)** or higher is selected.
    - Click **Run 'app'** (`Shift + F10`).
-
