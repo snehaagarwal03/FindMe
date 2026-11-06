@@ -12,19 +12,17 @@
   <img src="https://img.shields.io/badge/Storage-Jetpack%20DataStore-F4B400?style=for-the-badge&logo=android&logoColor=white" alt="Jetpack DataStore" />
 </p>
 
----
 
 ## Screen Highlights
 
 | Home Screen | Report Item |
 | :---: | :---: |
-| <img src="https://github.com/user-attachments/assets/c2ea1070-1c46-4e5b-93f1-cdbdc2c6a0fd" width="280" alt="Home Screen — Browse & Search" /><br> | <img src="https://github.com/user-attachments/assets/ac68bedc-1bad-4283-ab4b-5b85ba850c9e" width="280" alt="Report Screen — Submission Form" /><br> |
+| <img src="https://github.com/user-attachments/assets/c2ea1070-1c46-4e5b-93f1-cdbdc2c6a0fd" width="280" alt="Home Screen — Browse & Search" /> | <img src="https://github.com/user-attachments/assets/ac68bedc-1bad-4283-ab4b-5b85ba850c9e" width="280" alt="Report Screen — Submission Form" /> |
 
 | My Reports | Item Details & Completion |
 | :---: | :---: |
-| <img src="https://github.com/user-attachments/assets/87358332-eea5-433f-ae60-13eec4e9bd5c" width="280" alt="My Reports — Active & Past" /><br> | <img src="https://github.com/user-attachments/assets/63e0e19c-f0c5-4998-a762-eb8dba06d4bc" width="280" alt="Item Details — Status & Actions" /><br> |
+| <img src="https://github.com/user-attachments/assets/87358332-eea5-433f-ae60-13eec4e9bd5c" width="280" alt="My Reports — Active & Past" /> | <img src="https://github.com/user-attachments/assets/63e0e19c-f0c5-4998-a762-eb8dba06d4bc" width="280" alt="Item Details — Status & Actions" /> |
 
----
 
 ## Key Features
 
@@ -45,7 +43,6 @@
 - **Local Notifications**: Dispatches an on-device Android notification upon successful report submission (with Android 13+ `POST_NOTIFICATIONS` runtime permission handling).
 - **Persistent Preferences**: Saves user filter settings across sessions using Jetpack DataStore Preferences.
 
----
 
 ## Tech Stack & Architecture
 
@@ -64,7 +61,6 @@
 | **Jetpack DataStore Preferences** | Key-value storage for persistent UI preferences (such as selected filter chips and sample data seeding state). |
 | **NotificationManagerCompat** | Delivers local submission confirmation notifications and notification channel management (compatible with Android 13+). |
 
----
 
 ## What This Project Demonstrates
 
@@ -74,7 +70,6 @@
 - **Non-Destructive Database Evolution**: Demonstrates production database migration practices by safely migrating SQLite tables between versions while preserving existing records and photos.
 - **Privacy & Offline Resilience**: Ensures user lost-and-found data, contact details, and photos remain on the user's device in sandboxed app-specific storage.
 
----
 
 ## Getting Started
 
