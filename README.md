@@ -28,8 +28,8 @@
 
 - **Lost & Found Reporting**: Create listings categorized into Electronics, Bags, Accessories, Documents/ID, Books/Stationery, Clothing, or custom "Other" categories.
 - **Mandatory Photo Capture & Selection**:
-  - **Camera Capture**: Native system camera integration via `ActivityResultContracts.TakePicture` and Android `FileProvider`.
-  - **Photo Picker**: Android Photo Picker via `ActivityResultContracts.PickVisualMedia` with zero storage permissions required.
+  - **Camera Capture**: Native system camera integration via `TakePicture` and Android `FileProvider`.
+  - **Photo Picker**: Android Photo Picker via `PickVisualMedia` with zero storage permissions required.
   - **On-Device Storage**: Picked and captured images are securely copied to app-private internal storage (`filesDir/items/`).
 - **Report Completion Workflow**:
   - Report owners can mark their active listings as completed from the Item Detail screen.
