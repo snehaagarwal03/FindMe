@@ -21,7 +21,7 @@
 
 | My Reports | Item Details & Completion |
 | :---: | :---: |
-| <img src="https://github.com/user-attachments/assets/87358332-eea5-433f-ae60-13eec4e9bd5c" width="280" alt="My Reports — Active & Past" /> | <img src="https://github.com/user-attachments/assets/63e0e19c-f0c5-4998-a762-eb8dba06d4bc" width="280" alt="Item Details — Status & Actions" /> |
+| <img src="https://github.com/user-attachments/assets/87358332-eea5-433f-ae60-13eec4e9bd5c" width="280" alt="My Reports — Active & Past" /> | <img src="https://github.com/user-attachments/assets/5aaf5736-bc33-4f95-8d74-bd26807814df" width="280" alt="Item Details — Status & Actions" /> |
 
 
 ## Key Features
